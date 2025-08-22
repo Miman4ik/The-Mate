@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE MATE - Pixel Chess Game by FaWorit Team</title>
+    
+    <!-- 
+    ╔════════════════════════════════════════════════════════════╗
+    ║  КАК ИЗМЕНИТЬ ВЕРСИЮ ИГРЫ:                                ║
+    ║                                                            ║
+    ║  Найдите в коде строки с текстом "Version: Beta 1.3"      ║
+    ║  (строки примерно 996 и 1009)                             ║
+    ║                                                            ║
+    ║  Замените "Beta 1.3" на вашу версию, например:            ║
+    ║  • Version: Beta 1.4                                      ║
+    ║  • Version: Release 1.0                                   ║
+    ║  • Version: Alpha 0.9                                     ║
+    ║  • Version: v2.0 Final                                    ║
+    ║                                                            ║
+    ║  Версия отображается в двух местах:                       ║
+    ║  1. На главном экране под кнопкой START DOWNLOAD          ║
+    ║  2. В футере под кнопками загрузки                        ║
+    ╚════════════════════════════════════════════════════════════╝
+    
+    ╔════════════════════════════════════════════════════════════╗
+    ║  КАК ДОБАВИТЬ СКРИНШОТЫ И ФАЙЛ ИГРЫ:                      ║
+    ║                                                            ║
+    ║  ДЛЯ СКРИНШОТОВ:                                          ║
+    ║  1. Создайте папку "screenshots" рядом с HTML файлом      ║
+    ║  2. Сохраните скриншоты с именами:                        ║
+    ║     • menu.png - главное меню                             ║
+    ║     • game.png - игровая доска                            ║
+    ║     • settings.png - настройки                            ║
+    ║     • avatars.png - выбор аватара                         ║
+    ║                                                            ║
+    ║  ДЛЯ ИГРЫ:                                                ║
+    ║  1. Создайте папку "downloads" рядом с HTML файлом        ║
+    ║  2. Поместите файл TheMate.zip в папку downloads          ║
+    ║                                                            ║
+    ║  ФИНАЛЬНАЯ СТРУКТУРА:                                     ║
+    ║  📁 Папка вашего сайта                                    ║
+    ║    ├── index.html (этот файл)                             ║
+    ║    ├── 📁 screenshots                                     ║
+    ║    │   ├── menu.png                                       ║
+    ║    │   ├── game.png                                        ║
+    ║    │   ├── settings.png                                   ║
+    ║    │   └── avatars.png                                    ║
+    ║    └── 📁 downloads                                       ║
+    ║        └── TheMate.zip                                    ║
+    ╚════════════════════════════════════════════════════════════╝
+    -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect x="0" y="0" width="20" height="20" fill="white" stroke="black"/></svg>') 10 10, auto;
+        }
+
+        /* Пиксельный фон */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.02) 2px,
+                    rgba(255, 255, 255, 0.02) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.02) 2px,
+                    rgba(255, 255, 255, 0.02) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Навигация */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            background: #000000;
+            border-bottom: 4px solid #333;
+            z-index: 1000;
+            box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            position: relative;
+            padding: 5px;
+        }
+
+        nav a:hover {
+            color: #00ff00;
+            text-shadow: 2px 2px 0 #008800;
+        }
+
+        nav a::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover::before {
+            opacity: 1;
+        }
+
+        /* Герой секция */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 100px 20px;
+            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: pixelBlink 2s steps(2) infinite;
+            text-shadow: 
+                4px 4px 0 #333,
+                8px 8px 0 #222;
+            letter-spacing: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            margin-bottom: 50px;
+            color: #999;
+            animation: typewriter 3s steps(30) 1s forwards;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            margin: 0 auto 50px;
+        }
+
+        @keyframes typewriter {
+            to { width: 100%; }
+        }
+
+        .pixel-button {
+            display: inline-block;
+            padding: 20px 40px;
+            font-size: 16px;
+            background: #333;
+            border: 4px solid #555;
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            position: relative;
+            transition: all 0.2s;
+            box-shadow: 
+                4px 4px 0 #000,
+                8px 8px 0 rgba(0, 0, 0, 0.5);
+            animation: buttonFloat 3s ease-in-out infinite;
+        }
+
+        .pixel-button:hover {
+            background: #00ff00;
+            border-color: #00aa00;
+            color: #000;
+            transform: translate(-2px, -2px);
+            box-shadow: 
+                6px 6px 0 #000,
+                10px 10px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .pixel-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 
+                2px 2px 0 #000,
+                4px 4px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        /* Шахматные фигуры декорация */
+        .chess-pieces {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.3;
+        }
+
+        .chess-piece {
+            position: absolute;
+            font-size: 60px;
+            animation: floatPiece 20s linear infinite;
+        }
+
+        @keyframes floatPiece {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        /* Скриншоты */
+        .screenshots {
+            padding: 100px 20px;
+            background: #222;
+            position: relative;
+            z-index: 2;
+        }
+
+        .screenshots h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #fff;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        .screenshot-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .screenshot {
+            background: #333;
+            border: 4px solid #555;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s;
+            box-shadow: 4px 4px 0 #000;
+            overflow: hidden;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+            border-color: #00ff00;
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .screenshot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .screenshot:hover::before {
+            left: 100%;
+        }
+
+        /* Системные требования */
+        .requirements {
+            padding: 100px 20px;
+            background: #1a1a1a;
+            position: relative;
+            z-index: 2;
+        }
+
+        .requirements h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #fff;
+            text-shadow: 3px 3px 0 #000;
+        }
+
+        .req-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #000;
+            border: 4px solid #333;
+            padding: 40px;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .req-container h3 {
+            color: #00ff00;
+            margin-bottom: 30px;
+            font-size: 18px;
+            text-shadow: 2px 2px 0 #008800;
+        }
+
+        .req-list {
+            list-style: none;
+        }
+
+        .req-list li {
+            padding: 15px 0;
+            border-bottom: 2px dashed #333;
+            color: #ccc;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .req-list li:last-child {
+            border-bottom: none;
+        }
+
+        .req-list li::before {
+            content: '[OK]';
+            margin-right: 15px;
+            color: #00ff00;
+        }
+
+        /* Футер */
+        footer {
+            padding: 80px 20px;
+            text-align: center;
+            background: #000;
+            border-top: 4px solid #333;
+            position: relative;
+            z-index: 2;
+        }
+
+        footer h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 0 #333;
+        }
+
+        footer p {
+            font-size: 10px;
+            line-height: 2;
+            color: #999;
+        }
+
+        .download-section {
+            margin: 40px 0;
+        }
+
+        .ft-logo {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 40px auto;
+            position: relative;
+            animation: rotate 10s linear infinite;
+        }
+
+        .ft-logo::before {
+            content: 'FT';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .hexagon {
+            width: 100px;
+            height: 55px;
+            background: #333;
+            position: relative;
+            margin: 27.5px 0;
+            border-left: 4px solid #555;
+            border-right: 4px solid #555;
+        }
+
+        .hexagon:before,
+        .hexagon:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+        }
+
+        .hexagon:before {
+            bottom: 100%;
+            border-bottom: 27.5px solid #333;
+        }
+
+        .hexagon:after {
+            top: 100%;
+            border-top: 27.5px solid #333;
+        }
+
+        /* Анимации */
+        @keyframes pixelBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @keyframes buttonFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Стиль для версии игры */
+        .version-text {
+            font-family: 'Press Start 2P', monospace;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 40px;
+            }
+            
+            nav {
+                padding: 15px;
+            }
+            
+            nav ul {
+                gap: 20px;
+            }
+            
+            nav a {
+                font-size: 10px;
+            }
+            
+            .pixel-button {
+                font-size: 12px;
+                padding: 15px 30px;
+            }
+            
+            .screenshots h2,
+            .requirements h2 {
+                font-size: 24px;
+            }
+            
+            .req-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav>
+        <ul>
+            <li><a href="#home">HOME</a></li>
+            <li><a href="#screenshots">SCREENSHOTS</a></li>
+            <li><a href="#requirements">REQUIREMENTS</a></li>
+            <li><a href="#download">DOWNLOAD</a></li>
+        </ul>
+    </nav>
+
+    <!-- Герой секция -->
+    <section class="hero" id="home">
+        <div class="chess-pieces">
+            <span class="chess-piece" style="left: 10%; animation-delay: 0s;">♔</span>
+            <span class="chess-piece" style="left: 25%; animation-delay: 3s;">♕</span>
+            <span class="chess-piece" style="left: 40%; animation-delay: 6s;">♗</span>
+            <span class="chess-piece" style="left: 55%; animation-delay: 9s;">♘</span>
+            <span class="chess-piece" style="left: 70%; animation-delay: 12s;">♖</span>
+            <span class="chess-piece" style="left: 85%; animation-delay: 15s;">♙</span>
+        </div>
+        <div class="hero-content">
+            <h1 class="logo">THE MATE</h1>
+            <p class="subtitle">CLASSIC PIXEL CHESS GAME</p>
+            <a href="#download" class="pixel-button" onclick="handleDownload('windows')">
+                [ START DOWNLOAD ]
+            </a>
+            <p class="version-text" style="font-size: 10px; color: #00ff00; margin-top: 15px; text-shadow: 1px 1px 0 #000; animation: pulse 2s ease-in-out infinite;">
+                🏷️ Version: Beta 1.3
+            </p>
+        </div>
+    </section>
+
+    <!-- Скриншоты -->
+    <section class="screenshots" id="screenshots">
+        <h2>SCREENSHOTS</h2>
+        <p style="text-align: center; font-size: 10px; color: #999; margin-bottom: 30px;">
+            Hover to preview • Click to view fullscreen
+        </p>
+        <div class="screenshot-container">
+            <div class="screenshot">
+                <!-- Вариант 1: Локальный файл -->
+                <img src="screenshots/menu.png" alt="Main Menu" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
+                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
+                    Поместите menu.png<br>в папку screenshots
+                </div>
+            </div>
+            <div class="screenshot">
+                <!-- Вариант 2: Прямая ссылка -->
+                <img src="screenshots/game.png" alt="Game Board" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
+                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
+                    Поместите game.png<br>в папку screenshots
+                </div>
+            </div>
+            <div class="screenshot">
+                <img src="screenshots/settings.png" alt="Settings" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
+                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
+                    Поместите settings.png<br>в папку screenshots
+                </div>
+            </div>
+            <div class="screenshot">
+                <img src="screenshots/avatars.png" alt="Avatar Select" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
+                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
+                    Поместите avatars.png<br>в папку screenshots
+                </div>
+            </div>
+        </div>
+        
+        <!-- 
+        КАК ДОБАВИТЬ ВАШИ СКРИНШОТЫ:
+        
+        СПОСОБ 1 - Локальные файлы:
+        1. Создайте папку "screenshots" рядом с HTML файлом
+        2. Сохраните ваши скриншоты с именами:
+           - menu.png (главное меню)
+           - game.png (игровое поле)  
+           - settings.png (настройки)
+           - avatars.png (выбор аватара)
+        3. Поместите их в папку screenshots
+        
+        СПОСОБ 2 - Base64 (для встраивания прямо в код):
+        1. Конвертируйте изображения в Base64 на сайте: https://base64.guru/converter/encode/image
+        2. Замените src="screenshots/menu.png" на src="data:image/png;base64,ВАШ_КОД"
+        
+        СПОСОБ 3 - Внешние ссылки:
+        1. Загрузите изображения на хостинг (imgur.com, imgbb.com)
+        2. Замените src="screenshots/menu.png" на полученные ссылки
+        -->
+    </section>
+
+    <!-- Системные требования -->
+    <section class="requirements" id="requirements">
+        <h2>SYSTEM REQUIREMENTS</h2>
+        <div class="req-container">
+            <h3>MINIMUM:</h3>
+            <ul class="req-list">
+                <li>OS: Windows 10-11 / macOS / Linux</li>
+                <li>Processor: Pentium</li>
+                <li>Memory: 512 MB RAM</li>
+                <li>Storage: 100 MB available space</li>
+                <li>Network: Online multiplayer requires internet</li>
+                <li>Download size: ~50 MB (ZIP archive)</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer id="download">
+        <h2>READY TO PLAY?</h2>
+        <p>Download THE MATE and start your pixel chess adventure!</p>
+        <p style="font-size: 10px; opacity: 0.7; margin: 20px 0;">Universal ZIP archive for all platforms</p>
+        
+        <div class="download-section">
+            <a href="#" class="pixel-button" onclick="handleDownload('windows')">
+                [ DOWNLOAD FOR WINDOWS ]
+            </a>
+            <br><br>
+            <a href="#" class="pixel-button" onclick="handleDownload('mac')" style="font-size: 14px; padding: 15px 30px;">
+                [ DOWNLOAD FOR MAC ]
+            </a>
+            <br><br>
+            <a href="#" class="pixel-button" onclick="handleDownload('linux')" style="font-size: 14px; padding: 15px 30px;">
+                [ DOWNLOAD FOR LINUX ]
+            </a>
+            <br><br>
+            <!-- ВЕРСИЯ ИГРЫ - измените в начале <script> секции -->
+            <p class="version-text" style="font-size: 12px; color: #00ff00; margin-top: 10px; text-shadow: 2px 2px 0 #000; animation: pulse 2s ease-in-out infinite;">
+                🏷️ Version: Beta 1.3
+            </p>
+            <p class="file-size" style="font-size: 10px; opacity: 0.6; margin-top: 10px;">
+                📦 TheMate.zip - Universal archive (~50 MB)
+            </p>
+        </div>
+
+        <div class="ft-logo">
+            <div class="hexagon"></div>
+        </div>
+
+        <p style="margin-top: 40px;">
+            © 2025 FaWorit Team<br>
+            ALL RIGHTS RESERVED
+        </p>
+    </footer>
+
+    <script>
+        // ========================================
+        // 🎮 НАСТРОЙКИ ИГРЫ - ИЗМЕНИТЕ ЗДЕСЬ
+        // ========================================
+        const GAME_VERSION = "Beta 1.2";  // ← ИЗМЕНИТЕ ВЕРСИЮ ЗДЕСЬ (например: "Beta 1.4", "Release 1.0")
+        const GAME_SIZE = "80 MB";        // ← ИЗМЕНИТЕ РАЗМЕР ФАЙЛА ЗДЕСЬ (например: "75 MB", "120 MB")
+        
+        // Автоматическое обновление версии на странице
+        document.addEventListener('DOMContentLoaded', function() {
+            const versionElements = document.querySelectorAll('.version-text');
+            versionElements.forEach(el => {
+                el.innerHTML = `  Version: ${GAME_VERSION}`;
+            });
+            
+            // Обновление размера файла
+            const sizeElement = document.querySelector('.file-size');
+            if (sizeElement) {
+                sizeElement.innerHTML = `📦 TheMate.zip - Universal archive (~${GAME_SIZE})`;
+            }
+        });
+
+        // Функции для полноэкранного просмотра скриншотов
+        function openModal(element) {
+            const modal = document.getElementById('screenshotModal');
+            const modalImg = document.getElementById('modalImage');
+            const img = element.querySelector('img');
+            
+            // Проверяем, есть ли реальное изображение
+            if (img && img.src && !img.style.display.includes('none')) {
+                modal.style.display = 'block';
+                modalImg.src = img.src;
+                modalImg.alt = img.alt;
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('screenshotModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие модального окна по ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Предотвращаем закрытие при клике на изображение
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalContent = document.querySelector('.modal-content');
+            if (modalContent) {
+                modalContent.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
+
+        // Обработка загрузки
+        function handleDownload(os) {
+            // ОДИН ZIP ФАЙЛ ДЛЯ ВСЕХ ПЛАТФОРМ
+            // Просто поместите TheMate.zip в папку downloads
+            window.location.href = 'downloads/TheMate.zip';
+            
+            // Если файл на внешнем сервере, замените строку выше на:
+            // window.location.href = 'https://your-server.com/TheMate.zip';
+            
+            // Если у вас разные ZIP для каждой ОС, раскомментируйте:
+            /*
+            let filePath = '';
+            switch(os) {
+                case 'windows':
+                    filePath = 'downloads/TheMate_Windows.zip';
+                    break;
+                case 'mac':
+                    filePath = 'downloads/TheMate_macOS.zip';
+                    break;
+                case 'linux':
+                    filePath = 'downloads/TheMate_Linux.zip';
+                    break;
+                default:
+                    filePath = 'downloads/TheMate.zip';
+            }
+            window.location.href = filePath;
+            */
+        }
+
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Эффект печатной машинки для подзаголовка
+        window.addEventListener('load', () => {
+            const subtitle = document.querySelector('.subtitle');
+            if (subtitle) {
+                subtitle.style.animation = 'typewriter 2s steps(30) 0.5s forwards';
+            }
+        });
+    </script>
+</body>
+</html>
