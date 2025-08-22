@@ -5,756 +5,698 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE MATE - Pixel Chess Game by FaWorit Team</title>
     
-    <!-- 
-    ╔════════════════════════════════════════════════════════════╗
-    ║  КАК ИЗМЕНИТЬ ВЕРСИЮ ИГРЫ:                                ║
-    ║                                                            ║
-    ║  Найдите в коде строки с текстом "Version: Beta 1.3"      ║
-    ║  (строки примерно 996 и 1009)                             ║
-    ║                                                            ║
-    ║  Замените "Beta 1.3" на вашу версию, например:            ║
-    ║  • Version: Beta 1.4                                      ║
-    ║  • Version: Release 1.0                                   ║
-    ║  • Version: Alpha 0.9                                     ║
-    ║  • Version: v2.0 Final                                    ║
-    ║                                                            ║
-    ║  Версия отображается в двух местах:                       ║
-    ║  1. На главном экране под кнопкой START DOWNLOAD          ║
-    ║  2. В футере под кнопками загрузки                        ║
-    ╚════════════════════════════════════════════════════════════╝
-    
-    ╔════════════════════════════════════════════════════════════╗
-    ║  КАК ДОБАВИТЬ СКРИНШОТЫ И ФАЙЛ ИГРЫ:                      ║
-    ║                                                            ║
-    ║  ДЛЯ СКРИНШОТОВ:                                          ║
-    ║  1. Создайте папку "screenshots" рядом с HTML файлом      ║
-    ║  2. Сохраните скриншоты с именами:                        ║
-    ║     • menu.png - главное меню                             ║
-    ║     • game.png - игровая доска                            ║
-    ║     • settings.png - настройки                            ║
-    ║     • avatars.png - выбор аватара                         ║
-    ║                                                            ║
-    ║  ДЛЯ ИГРЫ:                                                ║
-    ║  1. Создайте папку "downloads" рядом с HTML файлом        ║
-    ║  2. Поместите файл TheMate.zip в папку downloads          ║
-    ║                                                            ║
-    ║  ФИНАЛЬНАЯ СТРУКТУРА:                                     ║
-    ║  📁 Папка вашего сайта                                    ║
-    ║    ├── index.html (этот файл)                             ║
-    ║    ├── 📁 screenshots                                     ║
-    ║    │   ├── menu.png                                       ║
-    ║    │   ├── game.png                                        ║
-    ║    │   ├── settings.png                                   ║
-    ║    │   └── avatars.png                                    ║
-    ║    └── 📁 downloads                                       ║
-    ║        └── TheMate.zip                                    ║
-    ╚════════════════════════════════════════════════════════════╝
-    -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
         }
-
+        
+        @font-face {
+            font-family: 'Pixel';
+            src: local('Courier New'), local('monospace');
+        }
+        
         body {
-            font-family: 'Press Start 2P', monospace;
-            background: #1a1a1a;
-            color: #ffffff;
+            font-family: 'Pixel', 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
             overflow-x: hidden;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect x="0" y="0" width="20" height="20" fill="white" stroke="black"/></svg>') 10 10, auto;
+            position: relative;
         }
-
-        /* Пиксельный фон */
+        
         body::before {
             content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: 
                 repeating-linear-gradient(
                     0deg,
                     transparent,
                     transparent 2px,
-                    rgba(255, 255, 255, 0.02) 2px,
-                    rgba(255, 255, 255, 0.02) 4px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(255, 255, 255, 0.02) 2px,
-                    rgba(255, 255, 255, 0.02) 4px
+                    rgba(255, 255, 255, 0.03) 2px,
+                    rgba(255, 255, 255, 0.03) 4px
                 );
             pointer-events: none;
             z-index: 1;
         }
-
-        /* Навигация */
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Navigation */
         nav {
             position: fixed;
             top: 0;
-            width: 100%;
-            padding: 20px;
-            background: #000000;
-            border-bottom: 4px solid #333;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
             z-index: 1000;
-            box-shadow: 0 4px 0 rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #4a9eff;
+            box-shadow: 0 2px 20px rgba(74, 158, 255, 0.3);
         }
-
+        
         nav ul {
             list-style: none;
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
+            flex-wrap: wrap;
         }
-
+        
         nav a {
-            color: #ffffff;
+            color: #e0e0e0;
             text-decoration: none;
-            font-size: 12px;
-            text-transform: uppercase;
-            transition: all 0.2s;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: all 0.3s;
             position: relative;
-            padding: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
         }
-
-        nav a:hover {
-            color: #00ff00;
-            text-shadow: 2px 2px 0 #008800;
-        }
-
+        
         nav a::before {
-            content: '>';
+            content: '';
             position: absolute;
-            left: -15px;
-            opacity: 0;
-            transition: opacity 0.2s;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4a9eff, #00ff88);
+            transition: width 0.3s;
         }
-
+        
         nav a:hover::before {
-            opacity: 1;
+            width: 100%;
         }
-
-        /* Герой секция */
+        
+        nav a:hover {
+            color: #4a9eff;
+            text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+        }
+        
+        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: 100px 20px;
-            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a2a 100%);
+            padding-top: 80px;
         }
-
+        
         .hero-content {
             text-align: center;
-            max-width: 800px;
-            z-index: 2;
+            animation: fadeInUp 1s ease-out;
         }
-
-        .logo {
-            font-size: 80px;
-            margin-bottom: 20px;
-            display: inline-block;
-            animation: pixelBlink 2s steps(2) infinite;
-            text-shadow: 
-                4px 4px 0 #333,
-                8px 8px 0 #222;
-            letter-spacing: 8px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            margin-bottom: 50px;
-            color: #999;
-            animation: typewriter 3s steps(30) 1s forwards;
-            overflow: hidden;
-            white-space: nowrap;
-            width: 0;
-            margin: 0 auto 50px;
-        }
-
-        @keyframes typewriter {
-            to { width: 100%; }
-        }
-
-        .pixel-button {
-            display: inline-block;
-            padding: 20px 40px;
-            font-size: 16px;
-            background: #333;
-            border: 4px solid #555;
-            color: #fff;
-            text-decoration: none;
-            text-transform: uppercase;
-            position: relative;
-            transition: all 0.2s;
-            box-shadow: 
-                4px 4px 0 #000,
-                8px 8px 0 rgba(0, 0, 0, 0.5);
-            animation: buttonFloat 3s ease-in-out infinite;
-        }
-
-        .pixel-button:hover {
-            background: #00ff00;
-            border-color: #00aa00;
-            color: #000;
-            transform: translate(-2px, -2px);
-            box-shadow: 
-                6px 6px 0 #000,
-                10px 10px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .pixel-button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 
-                2px 2px 0 #000,
-                4px 4px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        /* Шахматные фигуры декорация */
-        .chess-pieces {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            opacity: 0.3;
-        }
-
-        .chess-piece {
-            position: absolute;
-            font-size: 60px;
-            animation: floatPiece 20s linear infinite;
-        }
-
-        @keyframes floatPiece {
+        
+        @keyframes fadeInUp {
             from {
-                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+                transform: translateY(30px);
             }
             to {
-                transform: translateY(-100vh) rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-
-        /* Скриншоты */
-        .screenshots {
-            padding: 100px 20px;
-            background: #222;
-            position: relative;
-            z-index: 2;
+        
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #4a9eff, #00ff88, #4a9eff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
+            text-shadow: 0 0 30px rgba(74, 158, 255, 0.5);
+            letter-spacing: 8px;
         }
-
-        .screenshots h2 {
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 60px;
-            color: #fff;
-            text-shadow: 3px 3px 0 #000;
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-
-        .screenshot-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 40px;
+            letter-spacing: 4px;
+            animation: pulse 2s ease-in-out infinite;
         }
-
-        .screenshot {
-            background: #333;
-            border: 4px solid #555;
-            padding: 10px;
-            position: relative;
-            transition: all 0.3s;
-            box-shadow: 4px 4px 0 #000;
-            overflow: hidden;
-            height: 250px;
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        /* Chess pieces background */
+        .chess-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            opacity: 0.05;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 20px;
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
         }
-
-        .screenshot img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            image-rendering: pixelated;
+        
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -48%) rotate(5deg); }
+            75% { transform: translate(-50%, -52%) rotate(-5deg); }
         }
-
-        .screenshot:hover {
-            transform: scale(1.05);
-            border-color: #00ff00;
-            box-shadow: 6px 6px 0 #000;
+        
+        .chess-piece {
+            animation: rotate 30s linear infinite;
         }
-
-        .screenshot::before {
+        
+        .chess-piece:nth-child(even) {
+            animation-direction: reverse;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Download button */
+        .download-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #4a9eff, #00ff88);
+            color: #000;
+            text-decoration: none;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin: 20px 10px;
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(74, 158, 255, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(74, 158, 255, 0.8), 0 0 60px rgba(0, 255, 136, 0.5); }
+        }
+        
+        .download-btn::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
-
-        .screenshot:hover::before {
+        
+        .download-btn:hover::before {
             left: 100%;
         }
-
-        /* Системные требования */
-        .requirements {
-            padding: 100px 20px;
-            background: #1a1a1a;
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(74, 158, 255, 0.6);
+        }
+        
+        /* Sections */
+        section {
+            padding: 80px 0;
             position: relative;
-            z-index: 2;
         }
-
-        .requirements h2 {
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 60px;
-            color: #fff;
-            text-shadow: 3px 3px 0 #000;
-        }
-
-        .req-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #000;
-            border: 4px solid #333;
-            padding: 40px;
-            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .req-container h3 {
-            color: #00ff00;
+        
+        h2 {
+            font-size: 2.5rem;
             margin-bottom: 30px;
-            font-size: 18px;
-            text-shadow: 2px 2px 0 #008800;
+            text-align: center;
+            background: linear-gradient(90deg, #4a9eff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 4px;
         }
-
-        .req-list {
+        
+        /* Screenshots */
+        .screenshots {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(74, 158, 255, 0.3);
+            border-bottom: 1px solid rgba(74, 158, 255, 0.3);
+        }
+        
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .screenshot-item {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            transition: all 0.3s;
+            cursor: pointer;
+            aspect-ratio: 16/9;
+        }
+        
+        .screenshot-item:hover {
+            border-color: #4a9eff;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(74, 158, 255, 0.4);
+        }
+        
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .screenshot-item:hover .screenshot {
+            transform: scale(1.1);
+        }
+        
+        .screenshot-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: #fff;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+        
+        .screenshot-item:hover .screenshot-label {
+            transform: translateY(0);
+        }
+        
+        .screenshot-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .screenshot-placeholder .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        /* Requirements */
+        .requirements {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .req-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .req-card:hover {
+            border-color: #4a9eff;
+            background: rgba(74, 158, 255, 0.05);
+            transform: translateY(-5px);
+        }
+        
+        .req-card h3 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .req-card ul {
             list-style: none;
         }
-
-        .req-list li {
-            padding: 15px 0;
-            border-bottom: 2px dashed #333;
-            color: #ccc;
-            font-size: 12px;
-            line-height: 1.8;
+        
+        .req-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0a0a0;
         }
-
-        .req-list li:last-child {
+        
+        .req-card li:last-child {
             border-bottom: none;
         }
-
-        .req-list li::before {
+        
+        .req-card li::before {
             content: '[OK]';
-            margin-right: 15px;
-            color: #00ff00;
-        }
-
-        /* Футер */
-        footer {
-            padding: 80px 20px;
-            text-align: center;
-            background: #000;
-            border-top: 4px solid #333;
-            position: relative;
-            z-index: 2;
-        }
-
-        footer h2 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            color: #fff;
-            text-shadow: 2px 2px 0 #333;
-        }
-
-        footer p {
-            font-size: 10px;
-            line-height: 2;
-            color: #999;
-        }
-
-        .download-section {
-            margin: 40px 0;
-        }
-
-        .ft-logo {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            margin: 40px auto;
-            position: relative;
-            animation: rotate 10s linear infinite;
-        }
-
-        .ft-logo::before {
-            content: 'FT';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 32px;
+            color: #00ff88;
+            margin-right: 10px;
             font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 0 #000;
         }
-
-        .hexagon {
-            width: 100px;
-            height: 55px;
-            background: #333;
-            position: relative;
-            margin: 27.5px 0;
-            border-left: 4px solid #555;
-            border-right: 4px solid #555;
+        
+        /* Footer */
+        footer {
+            background: #000;
+            padding: 60px 0 30px;
+            text-align: center;
+            border-top: 2px solid #4a9eff;
         }
-
-        .hexagon:before,
-        .hexagon:after {
-            content: "";
-            position: absolute;
-            width: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
+        
+        .footer-logo {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #4a9eff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            letter-spacing: 4px;
         }
-
-        .hexagon:before {
-            bottom: 100%;
-            border-bottom: 27.5px solid #333;
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
         }
-
-        .hexagon:after {
-            top: 100%;
-            border-top: 27.5px solid #333;
+        
+        .footer-links a {
+            color: #a0a0a0;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #333;
+            transition: all 0.3s;
         }
-
-        /* Анимации */
-        @keyframes pixelBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+        
+        .footer-links a:hover {
+            color: #4a9eff;
+            border-color: #4a9eff;
+            background: rgba(74, 158, 255, 0.1);
         }
-
-        @keyframes buttonFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        
+        .version-info {
+            color: #666;
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        
+        .copyright {
+            color: #666;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
         }
-
-        /* Стиль для версии игры */
-        .version-text {
-            font-family: 'Press Start 2P', monospace;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Адаптивность */
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .logo {
-                font-size: 40px;
-            }
-            
-            nav {
-                padding: 15px;
-            }
-            
             nav ul {
-                gap: 20px;
+                gap: 15px;
             }
             
-            nav a {
-                font-size: 10px;
+            h1 {
+                letter-spacing: 4px;
             }
             
-            .pixel-button {
-                font-size: 12px;
-                padding: 15px 30px;
+            .chess-bg {
+                font-size: 100px;
             }
             
-            .screenshots h2,
-            .requirements h2 {
-                font-size: 24px;
+            .screenshot-grid {
+                grid-template-columns: 1fr;
             }
-            
-            .req-container {
-                padding: 20px;
-            }
+        }
+        
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #4a9eff, #00ff88);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00ff88, #4a9eff);
+        }
+
+        /* Loading animation for screenshots */
+        @keyframes loading {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.3; }
+        }
+
+        .screenshot-placeholder {
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        /* Download section enhancement */
+        .download-section {
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.1), rgba(0, 255, 136, 0.1));
+            border-top: 2px solid #4a9eff;
+        }
+
+        .download-info {
+            text-align: center;
+            margin: 30px 0;
+            color: #a0a0a0;
+        }
+
+        .download-size {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            margin-top: 10px;
+            color: #00ff88;
+        }
+
+        /* Hint text */
+        .hint {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <!-- Навигация -->
+    <!-- Navigation -->
     <nav>
         <ul>
-            <li><a href="#home">HOME</a></li>
-            <li><a href="#screenshots">SCREENSHOTS</a></li>
-            <li><a href="#requirements">REQUIREMENTS</a></li>
-            <li><a href="#download">DOWNLOAD</a></li>
+            <li><a href="#home">> HOME</a></li>
+            <li><a href="#screenshots">> SCREENSHOTS</a></li>
+            <li><a href="#requirements">> REQUIREMENTS</a></li>
+            <li><a href="#download">> DOWNLOAD</a></li>
         </ul>
     </nav>
-
-    <!-- Герой секция -->
-    <section class="hero" id="home">
-        <div class="chess-pieces">
-            <span class="chess-piece" style="left: 10%; animation-delay: 0s;">♔</span>
-            <span class="chess-piece" style="left: 25%; animation-delay: 3s;">♕</span>
-            <span class="chess-piece" style="left: 40%; animation-delay: 6s;">♗</span>
-            <span class="chess-piece" style="left: 55%; animation-delay: 9s;">♘</span>
-            <span class="chess-piece" style="left: 70%; animation-delay: 12s;">♖</span>
-            <span class="chess-piece" style="left: 85%; animation-delay: 15s;">♙</span>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="chess-bg">
+            <span class="chess-piece">♔</span>
+            <span class="chess-piece">♕</span>
+            <span class="chess-piece">♗</span>
+            <span class="chess-piece">♘</span>
+            <span class="chess-piece">♖</span>
+            <span class="chess-piece">♙</span>
         </div>
         <div class="hero-content">
-            <h1 class="logo">THE MATE</h1>
+            <h1>THE MATE</h1>
             <p class="subtitle">CLASSIC PIXEL CHESS GAME</p>
-            <a href="#download" class="pixel-button" onclick="handleDownload('windows')">
-                [ START DOWNLOAD ]
-            </a>
-            <p class="version-text" style="font-size: 10px; color: #00ff00; margin-top: 15px; text-shadow: 1px 1px 0 #000; animation: pulse 2s ease-in-out infinite;">
-                🏷️ Version: Beta 1.3
-            </p>
+            <a href="#download" class="download-btn">[ START DOWNLOAD ]</a>
+            <p class="version-info">Version: Beta 1.3</p>
         </div>
     </section>
-
-    <!-- Скриншоты -->
-    <section class="screenshots" id="screenshots">
-        <h2>SCREENSHOTS</h2>
-        <p style="text-align: center; font-size: 10px; color: #999; margin-bottom: 30px;">
-            Hover to preview • Click to view fullscreen
-        </p>
-        <div class="screenshot-container">
-            <div class="screenshot">
-                <!-- Вариант 1: Локальный файл -->
-                <img src="screenshots/menu.png" alt="Main Menu" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
-                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
-                    Поместите menu.png<br>в папку screenshots
+    
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="screenshots">
+        <div class="container">
+            <h2>SCREENSHOTS</h2>
+            <p class="hint">Hover to preview • Click to view fullscreen</p>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="menu.png" alt="Главное меню" class="screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="screenshot-placeholder" style="display:none;">
+                        <div class="icon">📁</div>
+                        <div>Поместите menu.png</div>
+                        <div>в папку screenshots</div>
+                    </div>
+                    <div class="screenshot-label">Главное меню</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="game.png" alt="Игровая доска" class="screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="screenshot-placeholder" style="display:none;">
+                        <div class="icon">📁</div>
+                        <div>Поместите game.png</div>
+                        <div>в папку screenshots</div>
+                    </div>
+                    <div class="screenshot-label">Игровая доска</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="settings.png" alt="Настройки" class="screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="screenshot-placeholder" style="display:none;">
+                        <div class="icon">📁</div>
+                        <div>Поместите settings.png</div>
+                        <div>в папку screenshots</div>
+                    </div>
+                    <div class="screenshot-label">Настройки</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="avatars.png" alt="Выбор аватара" class="screenshot" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="screenshot-placeholder" style="display:none;">
+                        <div class="icon">📁</div>
+                        <div>Поместите avatars.png</div>
+                        <div>в папку screenshots</div>
+                    </div>
+                    <div class="screenshot-label">Выбор аватара</div>
                 </div>
             </div>
-            <div class="screenshot">
-                <!-- Вариант 2: Прямая ссылка -->
-                <img src="screenshots/game.png" alt="Game Board" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
-                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
-                    Поместите game.png<br>в папку screenshots
-                </div>
-            </div>
-            <div class="screenshot">
-                <img src="screenshots/settings.png" alt="Settings" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
-                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
-                    Поместите settings.png<br>в папку screenshots
-                </div>
-            </div>
-            <div class="screenshot">
-                <img src="screenshots/avatars.png" alt="Avatar Select" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div style="display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: #d4d0c8; color: #000; font-size: 12px; text-align: center; padding: 20px;">
-                    <span style="font-size: 32px; margin-bottom: 10px;">📁</span>
-                    Поместите avatars.png<br>в папку screenshots
-                </div>
-            </div>
-        </div>
-        
-        <!-- 
-        КАК ДОБАВИТЬ ВАШИ СКРИНШОТЫ:
-        
-        СПОСОБ 1 - Локальные файлы:
-        1. Создайте папку "screenshots" рядом с HTML файлом
-        2. Сохраните ваши скриншоты с именами:
-           - menu.png (главное меню)
-           - game.png (игровое поле)  
-           - settings.png (настройки)
-           - avatars.png (выбор аватара)
-        3. Поместите их в папку screenshots
-        
-        СПОСОБ 2 - Base64 (для встраивания прямо в код):
-        1. Конвертируйте изображения в Base64 на сайте: https://base64.guru/converter/encode/image
-        2. Замените src="screenshots/menu.png" на src="data:image/png;base64,ВАШ_КОД"
-        
-        СПОСОБ 3 - Внешние ссылки:
-        1. Загрузите изображения на хостинг (imgur.com, imgbb.com)
-        2. Замените src="screenshots/menu.png" на полученные ссылки
-        -->
-    </section>
-
-    <!-- Системные требования -->
-    <section class="requirements" id="requirements">
-        <h2>SYSTEM REQUIREMENTS</h2>
-        <div class="req-container">
-            <h3>MINIMUM:</h3>
-            <ul class="req-list">
-                <li>OS: Windows 10-11 / macOS / Linux</li>
-                <li>Processor: Pentium</li>
-                <li>Memory: 512 MB RAM</li>
-                <li>Storage: 100 MB available space</li>
-                <li>Network: Online multiplayer requires internet</li>
-                <li>Download size: ~50 MB (ZIP archive)</li>
-            </ul>
         </div>
     </section>
-
-    <!-- Футер -->
-    <footer id="download">
-        <h2>READY TO PLAY?</h2>
-        <p>Download THE MATE and start your pixel chess adventure!</p>
-        <p style="font-size: 10px; opacity: 0.7; margin: 20px 0;">Universal ZIP archive for all platforms</p>
-        
-        <div class="download-section">
-            <a href="#" class="pixel-button" onclick="handleDownload('windows')">
-                [ DOWNLOAD FOR WINDOWS ]
-            </a>
-            <br><br>
-            <a href="#" class="pixel-button" onclick="handleDownload('mac')" style="font-size: 14px; padding: 15px 30px;">
-                [ DOWNLOAD FOR MAC ]
-            </a>
-            <br><br>
-            <a href="#" class="pixel-button" onclick="handleDownload('linux')" style="font-size: 14px; padding: 15px 30px;">
-                [ DOWNLOAD FOR LINUX ]
-            </a>
-            <br><br>
-            <!-- ВЕРСИЯ ИГРЫ - измените в начале <script> секции -->
-            <p class="version-text" style="font-size: 12px; color: #00ff00; margin-top: 10px; text-shadow: 2px 2px 0 #000; animation: pulse 2s ease-in-out infinite;">
-                🏷️ Version: Beta 1.3
-            </p>
-            <p class="file-size" style="font-size: 10px; opacity: 0.6; margin-top: 10px;">
-                📦 TheMate.zip - Universal archive (~50 MB)
-            </p>
+    
+    <!-- Requirements Section -->
+    <section id="requirements" class="requirements">
+        <div class="container">
+            <h2>SYSTEM REQUIREMENTS</h2>
+            <div class="req-grid">
+                <div class="req-card">
+                    <h3>MINIMUM:</h3>
+                    <ul>
+                        <li>OS: Windows 10-11 / macOS / Linux</li>
+                        <li>Processor: Pentium</li>
+                        <li>Memory: 512 MB RAM</li>
+                        <li>Storage: 100 MB available space</li>
+                        <li>Network: Online multiplayer requires internet</li>
+                        <li>Download size: ~50 MB (ZIP archive)</li>
+                    </ul>
+                </div>
+            </div>
         </div>
-
-        <div class="ft-logo">
-            <div class="hexagon"></div>
+    </section>
+    
+    <!-- Download Section -->
+    <section id="download" class="download-section">
+        <div class="container">
+            <footer>
+                <h2>READY TO PLAY?</h2>
+                <p class="download-info">Download THE MATE and start your pixel chess adventure!</p>
+                <p class="download-info">Universal ZIP archive for all platforms</p>
+                
+                <div class="footer-links">
+                    <a href="https://github.com/Miman4ik/The-Mate/releases" class="download-btn">[ DOWNLOAD FOR WINDOWS ]</a>
+                    <a href="https://github.com/Miman4ik/The-Mate/releases" class="download-btn">[ DOWNLOAD FOR MAC ]</a>
+                    <a href="https://github.com/Miman4ik/The-Mate/releases" class="download-btn">[ DOWNLOAD FOR LINUX ]</a>
+                    
+                    <p class="version-info">Version: Beta 1.3</p>
+                    <p class="download-size">📦 TheMate.zip - Universal archive (~44 MB)</p>
+                    <p class="hint">Click any button above to go to downloads page</p>
+                </div>
+                
+                <div class="footer-logo">FT</div>
+                
+                <div class="copyright">
+                    © 2025 FaWorit Team<br>
+                    ALL RIGHTS RESERVED
+                </div>
+            </footer>
         </div>
-
-        <p style="margin-top: 40px;">
-            © 2025 FaWorit Team<br>
-            ALL RIGHTS RESERVED
-        </p>
-    </footer>
-
+    </section>
+    
     <script>
-        // ========================================
-        // 🎮 НАСТРОЙКИ ИГРЫ - ИЗМЕНИТЕ ЗДЕСЬ
-        // ========================================
-        const GAME_VERSION = "Beta 1.2";  // ← ИЗМЕНИТЕ ВЕРСИЮ ЗДЕСЬ (например: "Beta 1.4", "Release 1.0")
-        const GAME_SIZE = "80 MB";        // ← ИЗМЕНИТЕ РАЗМЕР ФАЙЛА ЗДЕСЬ (например: "75 MB", "120 MB")
-        
-        // Автоматическое обновление версии на странице
-        document.addEventListener('DOMContentLoaded', function() {
-            const versionElements = document.querySelectorAll('.version-text');
-            versionElements.forEach(el => {
-                el.innerHTML = `  Version: ${GAME_VERSION}`;
+        // Add click handlers for screenshots
+        document.querySelectorAll('.screenshot-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('.screenshot');
+                if (img && img.src && !img.src.includes('data:')) {
+                    window.open(img.src, '_blank');
+                }
             });
-            
-            // Обновление размера файла
-            const sizeElement = document.querySelector('.file-size');
-            if (sizeElement) {
-                sizeElement.innerHTML = `📦 TheMate.zip - Universal archive (~${GAME_SIZE})`;
-            }
         });
-
-        // Функции для полноэкранного просмотра скриншотов
-        function openModal(element) {
-            const modal = document.getElementById('screenshotModal');
-            const modalImg = document.getElementById('modalImage');
-            const img = element.querySelector('img');
-            
-            // Проверяем, есть ли реальное изображение
-            if (img && img.src && !img.style.display.includes('none')) {
-                modal.style.display = 'block';
-                modalImg.src = img.src;
-                modalImg.alt = img.alt;
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('screenshotModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Закрытие модального окна по ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Предотвращаем закрытие при клике на изображение
-        document.addEventListener('DOMContentLoaded', function() {
-            const modalContent = document.querySelector('.modal-content');
-            if (modalContent) {
-                modalContent.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-        });
-
-        // Обработка загрузки
-        function handleDownload(os) {
-            // ОДИН ZIP ФАЙЛ ДЛЯ ВСЕХ ПЛАТФОРМ
-            // Просто поместите TheMate.zip в папку downloads
-            window.location.href = 'downloads/TheMate.zip';
-            
-            // Если файл на внешнем сервере, замените строку выше на:
-            // window.location.href = 'https://your-server.com/TheMate.zip';
-            
-            // Если у вас разные ZIP для каждой ОС, раскомментируйте:
-            /*
-            let filePath = '';
-            switch(os) {
-                case 'windows':
-                    filePath = 'downloads/TheMate_Windows.zip';
-                    break;
-                case 'mac':
-                    filePath = 'downloads/TheMate_macOS.zip';
-                    break;
-                case 'linux':
-                    filePath = 'downloads/TheMate_Linux.zip';
-                    break;
-                default:
-                    filePath = 'downloads/TheMate.zip';
-            }
-            window.location.href = filePath;
-            */
-        }
-
-        // Плавная прокрутка
+        
+        // Smooth scroll with offset for fixed nav
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    const offset = 80; // Height of fixed nav
+                    const targetPosition = target.offsetTop - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
                     });
                 }
             });
         });
-
-        // Эффект печатной машинки для подзаголовка
-        window.addEventListener('load', () => {
-            const subtitle = document.querySelector('.subtitle');
-            if (subtitle) {
-                subtitle.style.animation = 'typewriter 2s steps(30) 0.5s forwards';
+        
+        // Add parallax effect to chess background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const chessBg = document.querySelector('.chess-bg');
+            if (chessBg) {
+                chessBg.style.transform = `translate(-50%, calc(-50% + ${scrolled * 0.5}px))`;
             }
+        });
+        
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 1s';
+                document.body.style.opacity = '1';
+            }, 100);
         });
     </script>
 </body>
