@@ -1,4 +1,4 @@
-# THE MATE - Pixel Chess Game
+# THE MATE - Pixel Game
 
 Official website for THE MATE pixel chess game by FaWorit Team.
 
